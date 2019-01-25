@@ -1,0 +1,2 @@
+bareasgi~=0.2
+jinja2~=2.10
