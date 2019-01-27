@@ -23,7 +23,8 @@ app = Application()
 
 env = Environment(
     loader=FileSystemLoader(os.path.join(here, 'templates')),
-    autoescape=select_autoescape(['html', 'xml'])
+    autoescape=select_autoescape(['html', 'xml']),
+    enable_async=True
 )
 
 add_jinja2(

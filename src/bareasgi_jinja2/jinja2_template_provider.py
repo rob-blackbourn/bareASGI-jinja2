@@ -11,7 +11,12 @@ from bareasgi import (
     HttpRequestCallback
 )
 
-INFO_KEY = 'bareasgi_jinja2'
+HttpRequest = Tuple[Scope, Info, RouteMatches, Content]
+HttpTemplateRequestCallback = Callable[[Scope, Info, RouteMatches, Content], Awaitable[Mapping[str, Any]]]
+HttpDecoratorResponse = Callable[[Scope, Info, RouteMatches, Content], Awaitable[HttpResponse]]
+HttpTemplateResponse = Callable[[HttpTemplateRequestCallback], HttpDecoratorResponse]
+
+INFO_KEY = 'bareasgi_jinja2.Jinja2TemplateProvider'
 
 
 class Jinja2TemplateProvider:
@@ -19,19 +24,16 @@ class Jinja2TemplateProvider:
     def __init__(self, env: jinja2.Environment) -> None:
         self.env = env
 
-    def render_string(self, template_name: str, variables: Mapping[str, Any]) -> str:
-        # Get the template.
+    async def render_string(self, template_name: str, variables: Mapping[str, Any]) -> str:
         try:
             template: jinja2.Template = self.env.get_template(template_name)
         except jinja2.TemplateNotFound as e:
             raise RuntimeError(f"Template '{template_name}' not found")
-        except Exception as error:
-            print(error)
-            raise
 
-        text = template.render(**variables)
-
-        return text
+        if self.env.enable_async:
+            return await template.render_async(**variables)
+        else:
+            return template.render_async(**variables)
 
     async def __call__(
             self,
@@ -41,17 +43,11 @@ class Jinja2TemplateProvider:
             encoding: str = 'utf-8'
     ) -> HttpResponse:
         try:
-            text = self.render_string(template_name, variables)
+            text = await self.render_string(template_name, variables)
             content_type = f'text/html; chartset={encoding}'
             return status, [(b'content-type', content_type.encode())], text_writer(text)
         except RuntimeError as error:
             return 500, [(b'content-type', b'text/plain')], text_writer(str(error))
-
-
-HttpRequest = Tuple[Scope, Info, RouteMatches, Content]
-HttpTemplateRequestCallback = Callable[[Scope, Info, RouteMatches, Content], Awaitable[Mapping[str, Any]]]
-HttpDecoratorResponse = Callable[[Scope, Info, RouteMatches, Content], Awaitable[HttpResponse]]
-HttpTemplateResponse = Callable[[HttpTemplateRequestCallback], HttpDecoratorResponse]
 
 
 def template(
