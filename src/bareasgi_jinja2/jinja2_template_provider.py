@@ -7,8 +7,7 @@ from bareasgi import (
     Scope,
     Info,
     RouteMatches,
-    Content,
-    HttpRequestCallback
+    Content
 )
 
 HttpRequest = Tuple[Scope, Info, RouteMatches, Content]
@@ -47,7 +46,7 @@ class Jinja2TemplateProvider:
             content_type = f'text/html; chartset={encoding}'
             return status, [(b'content-type', content_type.encode())], text_writer(text)
         except RuntimeError as error:
-            return 500, [(b'content-type', b'text/plain')], text_writer(str(error))
+            return 500, [(b'content-type', b'text/plain')], text_writer(str(error), encoding=encoding)
 
 
 def template(
@@ -56,6 +55,19 @@ def template(
         encoding: str = 'utf-8',
         info_key: Optional[str] = None
 ) -> HttpTemplateResponse:
+    """Registers a jinja2 template callback.
+
+    Example:
+        @template('example1.html')
+        async def http_request_handler(scope, info, matches, content):
+            return {'name': 'rob'}
+
+    :param template_name: The name of the template.
+    :param encoding: The encdoing used for generating the body.
+    :param info_key: An optinal key to overide the key in the supplied info dict where the jinja2 Environment is held.
+    :return: A bareasgi HttpRequestCallback
+    """
+
     def decorator(func: HttpTemplateRequestCallback) -> HttpDecoratorResponse:
         async def wrapper(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
             provider: Jinja2TemplateProvider = info[info_key or INFO_KEY]
@@ -68,4 +80,21 @@ def template(
 
 
 def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str] = None) -> None:
+    """Adds jinja2 support ro bareasgi.
+
+    Example:
+        app = Application()
+
+        env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader('/path/to/templates')),
+            autoescape=jinja2.select_autoescape(['html', 'xml']),
+            enable_async=True
+        )
+
+        add_jinja2(app, env)
+
+    :param app: The bareasgi Application.
+    :param env: The jinja2 Environment.
+    :param info_key: An optinal key to overide the key in the supplied info dict where the jinja2 Environment is held.
+    """
     app.info[info_key or INFO_KEY] = Jinja2TemplateProvider(env)
