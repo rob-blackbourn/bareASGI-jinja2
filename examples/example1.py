@@ -9,12 +9,12 @@ from bareasgi import (
     Content,
     Application
 )
-from bareasgi_jinja2 import add_jinja2, template
+import bareasgi_jinja2
 
 here = os.path.abspath(os.path.dirname(__file__))
 
 
-@template('example1.html')
+@bareasgi_jinja2.template('example1.html')
 async def http_request_handler(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> Mapping[str, Any]:
     return {'name': 'rob'}
 
@@ -27,7 +27,7 @@ env = jinja2.Environment(
     enable_async=True
 )
 
-add_jinja2(app, env)
+bareasgi_jinja2.add_jinja2(app, env)
 
 app.http_router.add({'GET'}, '/example1', http_request_handler)
 
