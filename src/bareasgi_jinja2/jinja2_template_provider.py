@@ -16,9 +16,8 @@ INFO_KEY = 'bareasgi_jinja2'
 
 class Jinja2TemplateProvider:
 
-    def __init__(self, *args, autoescape: bool = True, **kwargs) -> None:
-        self.env = jinja2.Environment(*args, autoescape=autoescape, **kwargs)
-
+    def __init__(self, env: jinja2.Environment) -> None:
+        self.env = env
 
     def render_string(self, template_name: str, variables: Mapping[str, Any]) -> str:
         # Get the template.
@@ -26,11 +25,13 @@ class Jinja2TemplateProvider:
             template: jinja2.Template = self.env.get_template(template_name)
         except jinja2.TemplateNotFound as e:
             raise RuntimeError(f"Template '{template_name}' not found")
+        except Exception as error:
+            print(error)
+            raise
 
-        text = template.render(variables)
+        text = template.render(**variables)
 
         return text
-
 
     async def __call__(
             self,
@@ -65,12 +66,10 @@ def template(
             variables = await func(scope, info, matches, content)
             return await provider(status, template_name, variables, encoding)
 
-
         return wrapper
-
 
     return decorator
 
 
-def add_jinja2(app: Application, *args, autoescape: bool = True, info_key: Optional[str] = None, **kwargs) -> None:
-    app.info[info_key or INFO_KEY] = Jinja2TemplateProvider(*args, autoescape, **kwargs)
+def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str] = None) -> None:
+    app.info[info_key or INFO_KEY] = Jinja2TemplateProvider(env)
