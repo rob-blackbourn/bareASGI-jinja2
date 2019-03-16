@@ -1,6 +1,6 @@
-# barasgi-jinja2
+# bareASGI-jinja2
 
-Jinja2 support for bareasgi.
+Jinja2 support for [bareASGI](http://github.com/rob-blackbourn/bareasgi) (read the [documentation](https://bareasgi-jinja2.readthedocs.io/en/latest/))
 
 ## Usage
 
