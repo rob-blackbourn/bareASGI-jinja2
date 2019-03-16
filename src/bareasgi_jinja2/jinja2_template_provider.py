@@ -58,6 +58,9 @@ def template(
     """Registers a jinja2 template callback.
 
     Example:
+
+    .. code-block::python
+
         @template('example1.html')
         async def http_request_handler(scope, info, matches, content):
             return {'name': 'rob'}
@@ -83,6 +86,9 @@ def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str
     """Adds jinja2 support ro bareasgi.
 
     Example:
+
+    .. code-block::python
+
         app = Application()
 
         env = jinja2.Environment(
