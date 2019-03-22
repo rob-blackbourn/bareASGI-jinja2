@@ -95,6 +95,7 @@ html_theme = 'alabaster'
 # documentation.
 #
 html_theme_options = {
+    'logo': 'peach.png',
     'description': 'Jinja2 templating support for bareASGI',
     'github_user': 'rob-blackbourn',
     'github_repo': 'bareasgi-jinja2',
