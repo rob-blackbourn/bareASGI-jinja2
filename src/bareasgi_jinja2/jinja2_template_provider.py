@@ -75,9 +75,10 @@ def template(
 
 
     def decorator(func: HttpTemplateRequestCallback) -> HttpDecoratorResponse:
-        async def wrapper(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
+        async def wrapper(*args) -> HttpResponse:
+            info = args[-3] # Index from end as class methods will have an extra 'self' parameter.
             provider: Jinja2TemplateProvider = info[info_key or INFO_KEY]
-            variables = await func(scope, info, matches, content)
+            variables = await func(*args)
             return await provider(status, template_name, variables, encoding)
 
 
