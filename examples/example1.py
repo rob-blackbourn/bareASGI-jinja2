@@ -2,12 +2,12 @@ from typing import Mapping, Any
 import jinja2
 import os.path
 import uvicorn
-from bareasgi import (
+from bareasgi import Application
+from baretypes import (
     Scope,
     Info,
     RouteMatches,
-    Content,
-    Application
+    Content
 )
 import bareasgi_jinja2
 

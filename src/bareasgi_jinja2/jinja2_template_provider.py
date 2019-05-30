@@ -1,14 +1,14 @@
 from typing import Mapping, Optional, Any, Callable, Awaitable, Tuple
 import jinja2
-from bareasgi import (
-    Application,
+from bareasgi import Application
+from baretypes import (
     HttpResponse,
-    text_writer,
     Scope,
     Info,
     RouteMatches,
     Content
 )
+from bareutils import text_writer
 
 HttpRequest = Tuple[Scope, Info, RouteMatches, Content]
 HttpTemplateRequestCallback = Callable[[Scope, Info, RouteMatches, Content], Awaitable[Mapping[str, Any]]]
@@ -23,6 +23,7 @@ class Jinja2TemplateProvider:
     def __init__(self, env: jinja2.Environment) -> None:
         self.env = env
 
+
     async def render_string(self, template_name: str, variables: Mapping[str, Any]) -> str:
         try:
             template: jinja2.Template = self.env.get_template(template_name)
@@ -33,6 +34,7 @@ class Jinja2TemplateProvider:
             return await template.render_async(**variables)
         else:
             return template.render_async(**variables)
+
 
     async def __call__(
             self,
@@ -71,13 +73,16 @@ def template(
     :return: A bareasgi HttpRequestCallback
     """
 
+
     def decorator(func: HttpTemplateRequestCallback) -> HttpDecoratorResponse:
         async def wrapper(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> HttpResponse:
             provider: Jinja2TemplateProvider = info[info_key or INFO_KEY]
             variables = await func(scope, info, matches, content)
             return await provider(status, template_name, variables, encoding)
 
+
         return wrapper
+
 
     return decorator
 
