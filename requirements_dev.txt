@@ -1,5 +1,0 @@
-punch.py~=1.5
-pytest~=3.8
-pytest-asyncio~=0.9
-pytest-runner~=4.2
-uvicorn~=0.3

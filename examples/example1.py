@@ -1,28 +1,38 @@
-from typing import Mapping, Any
-import jinja2
+"""An example of jinja2 templating"""
+
 import os.path
+from typing import Mapping, Any
+
+import jinja2
 import uvicorn
-from bareasgi import Application
-from baretypes import (
+from bareasgi import (
+    Application,
     Scope,
     Info,
     RouteMatches,
     Content
 )
+
 import bareasgi_jinja2
 
-here = os.path.abspath(os.path.dirname(__file__))
+HERE = os.path.abspath(os.path.dirname(__file__))
 
 
 @bareasgi_jinja2.template('example1.html')
-async def http_request_handler(scope: Scope, info: Info, matches: RouteMatches, content: Content) -> Mapping[str, Any]:
+async def http_request_handler(
+        _scope: Scope,
+        _info: Info,
+        _matches: RouteMatches,
+        _content: Content
+) -> Mapping[str, Any]:
+    """Handle the request"""
     return {'name': 'rob'}
 
 
 app = Application()
 
 env = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.join(here, 'templates')),
+    loader=jinja2.FileSystemLoader(os.path.join(HERE, 'templates')),
     autoescape=jinja2.select_autoescape(['html', 'xml']),
     enable_async=True
 )

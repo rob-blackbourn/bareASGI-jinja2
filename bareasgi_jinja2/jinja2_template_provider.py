@@ -1,40 +1,75 @@
-from typing import Mapping, Optional, Any, Callable, Awaitable, Tuple
+"""Jinja2 Templating for bareASGI"""
+
+from typing import (
+    Mapping,
+    Optional,
+    Any,
+    Callable,
+    Awaitable,
+    Tuple
+)
+
 import jinja2
-from bareasgi import Application
-from baretypes import (
+from bareasgi import (
+    Application,
     HttpResponse,
     Scope,
     Info,
     RouteMatches,
-    Content
+    Content,
+    text_writer
 )
-from bareutils import text_writer
 
 HttpRequest = Tuple[Scope, Info, RouteMatches, Content]
-HttpTemplateRequestCallback = Callable[[Scope, Info, RouteMatches, Content], Awaitable[Mapping[str, Any]]]
-HttpDecoratorResponse = Callable[[Scope, Info, RouteMatches, Content], Awaitable[HttpResponse]]
-HttpTemplateResponse = Callable[[HttpTemplateRequestCallback], HttpDecoratorResponse]
+HttpTemplateRequestCallback = Callable[
+    [Scope, Info, RouteMatches, Content],
+    Awaitable[Mapping[str, Any]]
+]
+HttpDecoratorResponse = Callable[
+    [Scope, Info, RouteMatches, Content],
+    Awaitable[HttpResponse]
+]
+HttpTemplateResponse = Callable[
+    [HttpTemplateRequestCallback],
+    HttpDecoratorResponse
+]
 
 INFO_KEY = 'bareasgi_jinja2.Jinja2TemplateProvider'
 
 
 class Jinja2TemplateProvider:
+    """Jinja2TemplateProvider"""
 
     def __init__(self, env: jinja2.Environment) -> None:
         self.env = env
 
+    async def render_string(
+            self,
+            template_name: str,
+            variables: Mapping[str, Any]
+    ) -> str:
+        """render a string from a template
+        and variables.
 
-    async def render_string(self, template_name: str, variables: Mapping[str, Any]) -> str:
+        :param template_name: The name of the template
+        :type template_name: str
+        :param variables: The variables to use
+        :type variables: Mapping[str, Any]
+        :raises RuntimeError: [description]
+        :return: The renderable string
+        :rtype: str
+        """
         try:
-            template: jinja2.Template = self.env.get_template(template_name)
-        except jinja2.TemplateNotFound as e:
+            jinja2_template: jinja2.Template = self.env.get_template(
+                template_name
+            )
+        except jinja2.TemplateNotFound:
             raise RuntimeError(f"Template '{template_name}' not found")
 
-        if self.env.enable_async:
-            return await template.render_async(**variables)
+        if self.env.enable_async:  # type: ignore
+            return await jinja2_template.render_async(**variables)
         else:
-            return template.render_async(**variables)
-
+            return jinja2_template.render_async(**variables)  # type: ignore
 
     async def __call__(
             self,
@@ -46,9 +81,15 @@ class Jinja2TemplateProvider:
         try:
             text = await self.render_string(template_name, variables)
             content_type = f'text/html; chartset={encoding}'
-            return status, [(b'content-type', content_type.encode())], text_writer(text)
+            headers = [
+                (b'content-type', content_type.encode())
+            ]
+            return status, headers, text_writer(text)
         except RuntimeError as error:
-            return 500, [(b'content-type', b'text/plain')], text_writer(str(error), encoding=encoding)
+            headers = [
+                (b'content-type', b'text/plain')
+            ]
+            return 500, headers, text_writer(str(error), encoding=encoding)
 
 
 def template(
@@ -69,21 +110,20 @@ def template(
 
     :param template_name: The name of the template.
     :param encoding: The encdoing used for generating the body.
-    :param info_key: An optinal key to overide the key in the supplied info dict where the jinja2 Environment is held.
+    :param info_key: An optional key to overide the key in the supplied
+        info dict where the jinja2 Environment is held.
     :return: A bareasgi HttpRequestCallback
     """
 
-
     def decorator(func: HttpTemplateRequestCallback) -> HttpDecoratorResponse:
         async def wrapper(*args) -> HttpResponse:
-            info = args[-3] # Index from end as class methods will have an extra 'self' parameter.
+            # Index from end as class methods will have an extra 'self' parameter.
+            info = args[-3]
             provider: Jinja2TemplateProvider = info[info_key or INFO_KEY]
             variables = await func(*args)
             return await provider(status, template_name, variables, encoding)
 
-
         return wrapper
-
 
     return decorator
 
@@ -107,6 +147,7 @@ def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str
 
     :param app: The bareasgi Application.
     :param env: The jinja2 Environment.
-    :param info_key: An optinal key to overide the key in the supplied info dict where the jinja2 Environment is held.
+    :param info_key: An optional key to overide the key in the supplied
+        info dict where the jinja2 Environment is held.
     """
     app.info[info_key or INFO_KEY] = Jinja2TemplateProvider(env)

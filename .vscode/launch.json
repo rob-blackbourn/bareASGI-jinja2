@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Example1",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/example1.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}
