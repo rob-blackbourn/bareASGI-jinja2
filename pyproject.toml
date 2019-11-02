@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bareasgi-jinja2"
-version = "3.1.0"
+version = "3.1.1"
 description = "Jinja2 support for bareasgi"
 authors = ["Rob Blackbourn <rob.blackbourn@gmail.com>"]
 license = "Apache-2.0"
