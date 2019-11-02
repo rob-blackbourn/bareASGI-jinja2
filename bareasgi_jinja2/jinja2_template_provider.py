@@ -37,6 +37,10 @@ HttpTemplateResponse = Callable[
 INFO_KEY = 'bareasgi_jinja2.Jinja2TemplateProvider'
 
 
+class TemplateNotFoundError(Exception):
+    """Raised when a template is not found"""
+
+
 class Jinja2TemplateProvider:
     """Jinja2TemplateProvider"""
 
@@ -64,7 +68,8 @@ class Jinja2TemplateProvider:
                 template_name
             )
         except jinja2.TemplateNotFound:
-            raise RuntimeError(f"Template '{template_name}' not found")
+            raise TemplateNotFoundError(
+                f"Template '{template_name}' not found")
 
         if self.env.enable_async:  # type: ignore
             return await jinja2_template.render_async(**variables)
@@ -85,7 +90,7 @@ class Jinja2TemplateProvider:
                 (b'content-type', content_type.encode())
             ]
             return status, headers, text_writer(text)
-        except RuntimeError as error:
+        except TemplateNotFoundError as error:
             headers = [
                 (b'content-type', b'text/plain')
             ]
