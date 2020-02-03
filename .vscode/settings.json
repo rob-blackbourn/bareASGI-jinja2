@@ -5,7 +5,14 @@
     "python.linting.pylintEnabled": true,
     "python.linting.mypyEnabled": true,
     "cSpell.words": [
-        "bareasgi",
-        "stringify"
-    ]
+      "bareasgi",
+      "mkdocs",
+      "stringify"
+    ],
+    "python.testing.pytestArgs": [
+      "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true
 }

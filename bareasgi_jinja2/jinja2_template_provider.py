@@ -45,6 +45,11 @@ class Jinja2TemplateProvider:
     """Jinja2TemplateProvider"""
 
     def __init__(self, env: jinja2.Environment) -> None:
+        """The bareASGI Jinja2 template provider
+
+        Args:
+            env (jinja2.Environment): The jinja2 environment
+        """
         self.env = env
 
     async def render_string(
@@ -52,16 +57,17 @@ class Jinja2TemplateProvider:
             template_name: str,
             variables: Mapping[str, Any]
     ) -> str:
-        """render a string from a template
-        and variables.
+        """render a string from a template and variables.
 
-        :param template_name: The name of the template
-        :type template_name: str
-        :param variables: The variables to use
-        :type variables: Mapping[str, Any]
-        :raises RuntimeError: [description]
-        :return: The renderable string
-        :rtype: str
+        Args:
+            template_name (str): The name of the template
+            variables (Mapping[str, Any]): The variables to use
+
+        Raises:
+            TemplateNotFoundError: When the template was not found
+
+        Returns:
+            str: The renderable string
         """
         try:
             jinja2_template: jinja2.Template = self.env.get_template(
@@ -105,19 +111,24 @@ def template(
 ) -> HttpTemplateResponse:
     """Registers a jinja2 template callback.
 
-    Example:
+    For example:
 
-    .. code-block::python
+    ```python
+    @template('example1.html')
+    async def http_request_handler(scope, info, matches, content):
+        return {'name': 'rob'}
+    ```
 
-        @template('example1.html')
-        async def http_request_handler(scope, info, matches, content):
-            return {'name': 'rob'}
+    Args:
+        template_name (str): The name of the template.
+        status (int, optional): The OK status. Defaults to 200.
+        encoding (str, optional): The encdoing used for generating the body.. Defaults to 'utf-8'.
+        info_key (Optional[str], optional): An optional key to overide the key
+            in the supplied info dict where the jinja2 Environment is held.
+            Defaults to None.
 
-    :param template_name: The name of the template.
-    :param encoding: The encdoing used for generating the body.
-    :param info_key: An optional key to overide the key in the supplied
-        info dict where the jinja2 Environment is held.
-    :return: A bareasgi HttpRequestCallback
+    Returns:
+        HttpTemplateResponse: The decorated function
     """
 
     def decorator(func: HttpTemplateRequestCallback) -> HttpDecoratorResponse:
@@ -134,25 +145,27 @@ def template(
 
 
 def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str] = None) -> None:
-    """Adds jinja2 support ro bareasgi.
+    """Adds jinja2 support ro bareASGI.
 
-    Example:
+    This helper function can be used as follows:
 
-    .. code-block::python
+    ```python
+    app = Application()
 
-        app = Application()
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader('/path/to/templates')),
+        autoescape=jinja2.select_autoescape(['html', 'xml']),
+        enable_async=True
+    )
 
-        env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader('/path/to/templates')),
-            autoescape=jinja2.select_autoescape(['html', 'xml']),
-            enable_async=True
-        )
+    add_jinja2(app, env)
+    ```
 
-        add_jinja2(app, env)
-
-    :param app: The bareasgi Application.
-    :param env: The jinja2 Environment.
-    :param info_key: An optional key to overide the key in the supplied
-        info dict where the jinja2 Environment is held.
+    Args:
+        app (Application): The bareASGI Application.
+        env (jinja2.Environment): The jinja2 Environment
+        info_key (Optional[str], optional): An optional key to overide the key
+            in the supplied info dict where the jinja2 Environment is held.
+            Defaults to None.
     """
     app.info[info_key or INFO_KEY] = Jinja2TemplateProvider(env)
