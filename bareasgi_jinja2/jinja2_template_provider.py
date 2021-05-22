@@ -73,9 +73,10 @@ class Jinja2TemplateProvider:
             jinja2_template: jinja2.Template = self.env.get_template(
                 template_name
             )
-        except jinja2.TemplateNotFound:
+        except jinja2.TemplateNotFound as error:
             raise TemplateNotFoundError(
-                f"Template '{template_name}' not found")
+                f"Template '{template_name}' not found"
+            ) from error
 
         if self.env.enable_async:  # type: ignore
             return await jinja2_template.render_async(**variables)
