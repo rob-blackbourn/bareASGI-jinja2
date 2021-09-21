@@ -3,6 +3,10 @@
 Jinja2 support for [bareASGI](http://github.com/rob-blackbourn/bareasgi)
 (read the [documentation](https://rob-blackbourn.github.io/bareASGI-jinja2/))
 
+## Branch
+
+This is the v3 maintenance branch.
+
 ## Usage
 
 Try the following.
