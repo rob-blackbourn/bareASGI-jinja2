@@ -2,38 +2,22 @@
 
 from typing import Mapping, Any
 
+from bareasgi import Application, HttpRequest
 import jinja2
 import pkg_resources
 import uvicorn
-from bareasgi import (
-    Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content
-)
 
 import bareasgi_jinja2
 
 
 @bareasgi_jinja2.template('example1.html')
-async def http_request_handler(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> Mapping[str, Any]:
+async def http_request_handler(_request: HttpRequest) -> Mapping[str, Any]:
     """Handle the request"""
     return {'name': 'rob'}
 
 
 @bareasgi_jinja2.template('notemplate.html')
-async def handle_no_template(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> Mapping[str, Any]:
+async def handle_no_template(_request: HttpRequest) -> Mapping[str, Any]:
     """This is what happens if there is no template"""
     return {'name': 'rob'}
 

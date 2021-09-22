@@ -1,18 +1,12 @@
 {
-    "editor.formatOnSave": true,
-    "python.defaultInterpreterPath": ".venv/bin/python",
-    "python.linting.pylintUseMinimalCheckers": false,
-    "python.linting.pylintEnabled": true,
-    "python.linting.mypyEnabled": true,
-    "cSpell.words": [
-      "bareasgi",
-      "mkdocs",
-      "stringify"
-    ],
-    "python.testing.pytestArgs": [
-      "tests"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestEnabled": true
+  "editor.formatOnSave": true,
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.linting.pylintUseMinimalCheckers": false,
+  "python.linting.pylintEnabled": true,
+  "python.linting.mypyEnabled": true,
+  "cSpell.words": ["bareasgi", "mkdocs", "stringify", "uvicorn"],
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.pytestEnabled": true
 }

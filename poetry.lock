@@ -48,34 +48,22 @@ toml = "*"
 
 [[package]]
 name = "bareasgi"
-version = "3.7.1"
+version = "4.0.0a1"
 description = "A lightweight ASGI framework"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
-baretypes = ">=3.6,<4.0"
-bareutils = ">=3.6,<4.0"
-
-[[package]]
-name = "baretypes"
-version = "3.6.4"
-description = "Types for bareASGI and bareClient"
-category = "main"
-optional = false
-python-versions = ">=3.7,<4.0"
+bareutils = ">=4.0.0-alpha.0,<5.0.0"
 
 [[package]]
 name = "bareutils"
-version = "3.7.0"
+version = "4.0.0a0"
 description = "Utilities for bareASGI and bareClient"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
-
-[package.dependencies]
-baretypes = ">=3,<4"
 
 [[package]]
 name = "click"
@@ -218,17 +206,17 @@ markdown = ">=3.1,<4.0"
 
 [[package]]
 name = "jinja2"
-version = "2.11.3"
+version = "3.0.1"
 description = "A very fast and expressive template engine."
 category = "main"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = ">=3.6"
 
 [package.dependencies]
-MarkupSafe = ">=0.23"
+MarkupSafe = ">=2.0"
 
 [package.extras]
-i18n = ["Babel (>=0.8)"]
+i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "lazy-object-proxy"
@@ -591,6 +579,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "types-setuptools"
+version = "57.4.0"
+description = "Typing stubs for setuptools"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "3.10.0.2"
 description = "Backported and Experimental Type Hints for Python 3.5+"
@@ -691,7 +687,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "b6f919b28e80f50500c3ba0f43bff2a5f352830c4ba0234f13ef6e2e797985bc"
+content-hash = "0ab2e9e04ad43d88b606cc334873e6b229cdd2e009d0dffcf7e18c49143948d3"
 
 [metadata.files]
 astroid = [
@@ -711,16 +707,12 @@ autopep8 = [
     {file = "autopep8-1.5.7.tar.gz", hash = "sha256:276ced7e9e3cb22e5d7c14748384a5cf5d9002257c0ed50c0e075b68011bb6d0"},
 ]
 bareasgi = [
-    {file = "bareasgi-3.7.1-py3-none-any.whl", hash = "sha256:9849f6b621d5932755d1631eedd22d06d52bbb18f1ad3f434fb66bf6479e1ffc"},
-    {file = "bareasgi-3.7.1.tar.gz", hash = "sha256:ecea6517edb936dfeaf06871766f259efd82dd52300fca6aeb4ba5d32b8f1ca5"},
-]
-baretypes = [
-    {file = "baretypes-3.6.4-py3-none-any.whl", hash = "sha256:563ebee21a2942f9fff6a7208a194fb3b6a68de86dff5dc31b144003badccc8d"},
-    {file = "baretypes-3.6.4.tar.gz", hash = "sha256:66339cbc1ce1fcae37848a56132a3929da93ba14530fe5fa3c3a1ca8da8ce04d"},
+    {file = "bareasgi-4.0.0a1-py3-none-any.whl", hash = "sha256:8b66bafbfa65fc3c7346148e4d8da778578fefac6c408b5c774d2cdfa83d2884"},
+    {file = "bareasgi-4.0.0a1.tar.gz", hash = "sha256:f43e9203eb23cd77c34aed8f999bfacf59f2f5c91aa59d0055f9689534cfdd01"},
 ]
 bareutils = [
-    {file = "bareutils-3.7.0-py3-none-any.whl", hash = "sha256:d0859d047035a02aa039193cf6ba86b9f8cc241d6fa1629fc483a422729d08d8"},
-    {file = "bareutils-3.7.0.tar.gz", hash = "sha256:c1ed0f2239eff3e0eb6053ca96a71be157c54266acb35e06173344e19e70fc9c"},
+    {file = "bareutils-4.0.0a0-py3-none-any.whl", hash = "sha256:1911042d030802965802b07f12f1142e60cf409b08310bb4819f276c77e463a4"},
+    {file = "bareutils-4.0.0a0.tar.gz", hash = "sha256:3fdc31f5be980a567c24c951b65122b7e695899f5724e0a99be7b182a0860beb"},
 ]
 click = [
     {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},
@@ -769,8 +761,8 @@ jetblack-markdown = [
     {file = "jetblack_markdown-0.6-py3-none-any.whl", hash = "sha256:4215db8076584aea5949ae2323be8d7a17ce4987aa891445d16d91f0a5d3a2ae"},
 ]
 jinja2 = [
-    {file = "Jinja2-2.11.3-py2.py3-none-any.whl", hash = "sha256:03e47ad063331dd6a3f04a43eddca8a966a26ba0c5b7207a9a9e4e08f1b29419"},
-    {file = "Jinja2-2.11.3.tar.gz", hash = "sha256:a6d58433de0ae800347cab1fa3043cebbabe8baa9d29e668f1c768cb87a333c6"},
+    {file = "Jinja2-3.0.1-py3-none-any.whl", hash = "sha256:1f06f2da51e7b56b8f238affdd6b4e2c61e39598a378cc49345bc1bd42a978a4"},
+    {file = "Jinja2-3.0.1.tar.gz", hash = "sha256:703f484b47a6af502e743c9122595cc812b0271f661722403114f71a79d0f5a4"},
 ]
 lazy-object-proxy = [
     {file = "lazy-object-proxy-1.6.0.tar.gz", hash = "sha256:489000d368377571c6f982fba6497f2aa13c6d1facc40660963da62f5c379726"},
@@ -1048,6 +1040,10 @@ typed-ast = [
     {file = "typed_ast-1.4.3-cp39-cp39-win32.whl", hash = "sha256:209596a4ec71d990d71d5e0d312ac935d86930e6eecff6ccc7007fe54d703808"},
     {file = "typed_ast-1.4.3-cp39-cp39-win_amd64.whl", hash = "sha256:9c6d1a54552b5330bc657b7ef0eae25d00ba7ffe85d9ea8ae6540d2197a3788c"},
     {file = "typed_ast-1.4.3.tar.gz", hash = "sha256:fb1bbeac803adea29cedd70781399c99138358c26d05fcbd23c13016b7f5ec65"},
+]
+types-setuptools = [
+    {file = "types-setuptools-57.4.0.tar.gz", hash = "sha256:5034f81b237429c1dc0ad84d3e9015e74730400c4db2b4db40daba216d39289b"},
+    {file = "types_setuptools-57.4.0-py3-none-any.whl", hash = "sha256:986630532705e8c77740b6d3cd86aaafd1e0ba6b04119c73c39dc4a67ceae579"},
 ]
 typing-extensions = [
     {file = "typing_extensions-3.10.0.2-py2-none-any.whl", hash = "sha256:d8226d10bc02a29bcc81df19a26e56a9647f8b0a6d4a83924139f4a8b01f17b7"},

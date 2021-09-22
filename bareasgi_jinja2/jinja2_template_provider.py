@@ -1,32 +1,27 @@
 """Jinja2 Templating for bareASGI"""
 
 from typing import (
-    Mapping,
-    Optional,
     Any,
-    Callable,
     Awaitable,
-    Tuple
+    Callable,
+    Mapping,
+    Optional
 )
 
 import jinja2
 from bareasgi import (
     Application,
+    HttpRequest,
     HttpResponse,
-    Scope,
-    Info,
-    RouteMatches,
-    Content,
     text_writer
 )
 
-HttpRequest = Tuple[Scope, Info, RouteMatches, Content]
 HttpTemplateRequestCallback = Callable[
-    [Scope, Info, RouteMatches, Content],
+    [HttpRequest],
     Awaitable[Mapping[str, Any]]
 ]
 HttpDecoratorResponse = Callable[
-    [Scope, Info, RouteMatches, Content],
+    [HttpRequest],
     Awaitable[HttpResponse]
 ]
 HttpTemplateResponse = Callable[
@@ -96,12 +91,16 @@ class Jinja2TemplateProvider:
             headers = [
                 (b'content-type', content_type.encode())
             ]
-            return status, headers, text_writer(text)
+            return HttpResponse(status, headers, text_writer(text))
         except TemplateNotFoundError as error:
             headers = [
                 (b'content-type', b'text/plain')
             ]
-            return 500, headers, text_writer(str(error), encoding=encoding)
+            return HttpResponse(
+                500,
+                headers,
+                text_writer(str(error), encoding=encoding)
+            )
 
 
 def template(
