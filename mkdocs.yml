@@ -30,8 +30,6 @@ markdown_extensions:
       ignore_inherited: false
       follow_module_tree: false
       prefer_docstring: true
-      template_folder: docs/templates
-      template_file: main.jinja2
   - toc:
       permalink: true
 
