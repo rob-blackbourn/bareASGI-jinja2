@@ -20,16 +20,8 @@ HttpTemplateRequestCallback = Callable[
     [HttpRequest],
     Awaitable[Mapping[str, Any]]
 ]
-HttpDecoratorResponse = Callable[
-    [HttpRequest],
-    Awaitable[HttpResponse]
-]
-HttpTemplateResponse = Callable[
-    [HttpTemplateRequestCallback],
-    HttpDecoratorResponse
-]
 
-INFO_KEY = 'bareasgi_jinja2.Jinja2TemplateProvider'
+INFO_KEY = '__bareasgi_jinja2.Jinja2TemplateProvider__'
 
 
 class TemplateNotFoundError(Exception):
@@ -73,7 +65,7 @@ class Jinja2TemplateProvider:
                 f"Template '{template_name}' not found"
             ) from error
 
-        if self.env.enable_async:  # type: ignore
+        if self.env.is_async:  # type: ignore
             return await jinja2_template.render_async(**variables)
         else:
             return jinja2_template.render_async(**variables)  # type: ignore
@@ -102,46 +94,19 @@ class Jinja2TemplateProvider:
                 text_writer(str(error), encoding=encoding)
             )
 
-
-def template(
-        template_name: str,
-        status: int = 200,
-        encoding: str = 'utf-8',
-        info_key: Optional[str] = None
-) -> HttpTemplateResponse:
-    """Registers a jinja2 template callback.
-
-    For example:
-
-    ```python
-    @template('example1.html')
-    async def http_request_handler(scope, info, matches, content):
-        return {'name': 'rob'}
-    ```
-
-    Args:
-        template_name (str): The name of the template.
-        status (int, optional): The OK status. Defaults to 200.
-        encoding (str, optional): The encdoing used for generating the body.. Defaults to 'utf-8'.
-        info_key (Optional[str], optional): An optional key to overide the key
-            in the supplied info dict where the jinja2 Environment is held.
-            Defaults to None.
-
-    Returns:
-        HttpTemplateResponse: The decorated function
-    """
-
-    def decorator(func: HttpTemplateRequestCallback) -> HttpDecoratorResponse:
-        async def wrapper(*args) -> HttpResponse:
-            # Index from end as class methods will have an extra 'self' parameter.
-            info = args[-3]
-            provider: Jinja2TemplateProvider = info[info_key or INFO_KEY]
-            variables = await func(*args)
-            return await provider(status, template_name, variables, encoding)
-
-        return wrapper
-
-    return decorator
+    @classmethod
+    async def apply(
+            cls,
+            request: HttpRequest,
+            template_name: str,
+            variables: Mapping[str, Any],
+            *,
+            status: int = 200,
+            encoding: str = 'utf-8',
+            info_key: str = INFO_KEY
+    ) -> HttpResponse:
+        provider: Jinja2TemplateProvider = request.info[info_key]
+        return await provider(status, template_name, variables, encoding)
 
 
 def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str] = None) -> None:

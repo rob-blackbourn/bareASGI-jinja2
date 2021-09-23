@@ -8,15 +8,15 @@ import jinja2
 import os.path
 import uvicorn
 from bareasgi import Application
-import bareasgi_jinja2
+from bareasgi_jinja2 import Jinja2TemplateProvider, add_jinja2
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-
-@bareasgi_jinja2.template('example1.html')
-async def http_request_handler(scope, info, matches, content):
-    return {'name': 'rob'}
-
+async def http_request_handler(request: HttpRequest) -> HttpResponse:
+    """Handle the request"""
+    template = 'example1.html'
+    variables = {'name': 'rob'}
+    return await Jinja2TemplateProvider.apply(request, template, variables)
 
 app = Application()
 
@@ -26,7 +26,7 @@ env = jinja2.Environment(
     enable_async=True
 )
 
-bareasgi_jinja2.add_jinja2(app, env)
+add_jinja2(app, env)
 
 app.http_router.add({'GET'}, '/example1', http_request_handler)
 
