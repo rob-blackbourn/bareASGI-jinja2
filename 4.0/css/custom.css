@@ -1,0 +1,30 @@
+span.autodoc-vartype {
+    color: #c53204;
+    font-size: small;
+}
+
+var.autodoc-varname {
+    color: #4b9e48;
+    font-size: small;
+}
+
+h3.autodoc-title {
+    font-weight: bold;
+}
+
+h4.autodoc-title {
+    font-weight: bold;
+    margin-block-end: 0;
+}
+
+.autodoc-qualifier {
+    font-weight: normal;
+}
+
+p {
+    font-size: small;
+}
+
+.autodoc-arg-indent {
+    padding-left: 1em;
+}
