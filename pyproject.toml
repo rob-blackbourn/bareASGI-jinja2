@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bareasgi-jinja2"
-version = "4.0.0-alpha.0"
+version = "4.0.0"
 description = "Jinja2 support for bareasgi"
 authors = ["Rob Blackbourn <rob.blackbourn@gmail.com>"]
 license = "Apache-2.0"
@@ -11,8 +11,8 @@ packages = [
 repository = "https://github.com/rob-blackbourn/bareasgi-jinja2"
 
 [tool.poetry.dependencies]
-python = "^3.7"
-bareasgi = "^4.0.0-alpha.1"
+python = "^3.8"
+bareasgi = "^4.0.0"
 jinja2 = "^3.0"
 
 [tool.poetry.dev-dependencies]
