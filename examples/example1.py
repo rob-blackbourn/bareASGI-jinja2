@@ -1,41 +1,30 @@
 """An example of jinja2 templating"""
 
-from typing import Mapping, Any
 
+from bareasgi import Application, HttpRequest, HttpResponse
 import jinja2
 import pkg_resources
 import uvicorn
-from bareasgi import (
-    Application,
-    Scope,
-    Info,
-    RouteMatches,
-    Content
-)
 
-import bareasgi_jinja2
+from bareasgi_jinja2 import Jinja2TemplateProvider, add_jinja2
 
 
-@bareasgi_jinja2.template('example1.html')
-async def http_request_handler(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> Mapping[str, Any]:
+async def http_request_handler(request: HttpRequest) -> HttpResponse:
     """Handle the request"""
-    return {'name': 'rob'}
+    return await Jinja2TemplateProvider.apply(
+        request,
+        'example1.html',
+        {'name': 'rob'}
+    )
 
 
-@bareasgi_jinja2.template('notemplate.html')
-async def handle_no_template(
-        _scope: Scope,
-        _info: Info,
-        _matches: RouteMatches,
-        _content: Content
-) -> Mapping[str, Any]:
+async def handle_no_template(request: HttpRequest) -> HttpResponse:
     """This is what happens if there is no template"""
-    return {'name': 'rob'}
+    return await Jinja2TemplateProvider.apply(
+        request,
+        'notemplate.html',
+        {'name': 'rob'}
+    )
 
 if __name__ == '__main__':
 
@@ -47,7 +36,7 @@ if __name__ == '__main__':
     )
 
     app = Application()
-    bareasgi_jinja2.add_jinja2(app, env)
+    add_jinja2(app, env)
 
     app.http_router.add({'GET'}, '/example1', http_request_handler)
     app.http_router.add({'GET'}, '/notemplate', handle_no_template)

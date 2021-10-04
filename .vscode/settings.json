@@ -1,18 +1,27 @@
 {
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "python.linting.pylintUseMinimalCheckers": false,
+  "python.linting.pylintEnabled": true,
+  "python.linting.mypyEnabled": true,
+  "cSpell.words": [
+    "abspath",
+    "autodoc",
+    "autoescape",
+    "bareasgi",
+    "blackbourn",
+    "codehilite",
+    "dunder",
+    "favicon",
+    "jetblack",
+    "mkdocs",
+    "stringify",
+    "uvicorn"
+  ],
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "[python]": {
     "editor.formatOnSave": true,
-    "python.defaultInterpreterPath": ".venv/bin/python",
-    "python.linting.pylintUseMinimalCheckers": false,
-    "python.linting.pylintEnabled": true,
-    "python.linting.mypyEnabled": true,
-    "cSpell.words": [
-      "bareasgi",
-      "mkdocs",
-      "stringify"
-    ],
-    "python.testing.pytestArgs": [
-      "tests"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestEnabled": true
+    "editor.rulers": [80]
+  }
 }
