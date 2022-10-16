@@ -79,7 +79,7 @@ class Jinja2TemplateProvider:
     ) -> HttpResponse:
         try:
             text = await self.render_string(template_name, variables)
-            content_type = f'text/html; chartset={encoding}'
+            content_type = f'text/html; charset={encoding}'
             headers = [
                 (b'content-type', content_type.encode())
             ]
@@ -129,7 +129,7 @@ def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str
     Args:
         app (Application): The bareASGI Application.
         env (jinja2.Environment): The jinja2 Environment
-        info_key (Optional[str], optional): An optional key to overide the key
+        info_key (Optional[str], optional): An optional key to override the key
             in the supplied info dict where the jinja2 Environment is held.
             Defaults to None.
     """

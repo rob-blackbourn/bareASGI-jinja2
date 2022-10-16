@@ -14,7 +14,9 @@
     "favicon",
     "jetblack",
     "mkdocs",
+    "renderable",
     "stringify",
+    "Templating",
     "uvicorn"
   ],
   "python.testing.pytestArgs": ["tests"],
