@@ -3,7 +3,7 @@
 
 from bareasgi import Application, HttpRequest, HttpResponse
 import jinja2
-import pkg_resources
+from pathlib import Path
 import uvicorn
 
 from bareasgi_jinja2 import Jinja2TemplateProvider, add_jinja2
@@ -28,7 +28,8 @@ async def handle_no_template(request: HttpRequest) -> HttpResponse:
 
 if __name__ == '__main__':
 
-    TEMPLATES = pkg_resources.resource_filename(__name__, "templates")
+    folder = Path(__file__).parent
+    TEMPLATES = folder / "templates"
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(TEMPLATES),
         autoescape=jinja2.select_autoescape(['html', 'xml']),
