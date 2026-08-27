@@ -8,6 +8,7 @@
     "autodoc",
     "autoescape",
     "bareasgi",
+    "bareutils",
     "blackbourn",
     "codehilite",
     "dunder",

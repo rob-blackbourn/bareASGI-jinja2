@@ -1,22 +1,12 @@
 """Jinja2 Templating for bareASGI"""
 
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Mapping,
-    Optional
-)
+from typing import Any, Awaitable, Callable, Mapping
 
 import jinja2
-from bareasgi import (
-    Application,
-    HttpRequest,
-    HttpResponse,
-    text_writer
-)
+from bareutils import text_writer
+from bareasgi import Application, HttpRequest, HttpResponse
 
-HttpTemplateRequestCallback = Callable[
+type HttpTemplateRequestCallback = Callable[
     [HttpRequest],
     Awaitable[Mapping[str, Any]]
 ]
@@ -109,7 +99,11 @@ class Jinja2TemplateProvider:
         return await provider(status, template_name, variables, encoding)
 
 
-def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str] = None) -> None:
+def add_jinja2(
+        app: Application,
+        env: jinja2.Environment,
+        info_key: str | None = None
+) -> None:
     """Adds jinja2 support ro bareASGI.
 
     This helper function can be used as follows:
@@ -129,7 +123,7 @@ def add_jinja2(app: Application, env: jinja2.Environment, info_key: Optional[str
     Args:
         app (Application): The bareASGI Application.
         env (jinja2.Environment): The jinja2 Environment
-        info_key (Optional[str], optional): An optional key to override the key
+        info_key (str | None, optional): An optional key to override the key
             in the supplied info dict where the jinja2 Environment is held.
             Defaults to None.
     """
